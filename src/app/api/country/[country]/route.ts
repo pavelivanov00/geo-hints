@@ -1,37 +1,29 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/app/lib/mongodb';
 
-export async function GET(req: Request, context: { params: { country: string } }) {
-  const { params } = context;
+export async function GET(req: Request) {
+  if (!req.url) {
+    return NextResponse.json({ message: 'Invalid request URL' }, { status: 400 });
+  }
 
-  const country = await params.country;
+  const url = new URL(req.url);
+  const country = url.pathname.split('/').pop();
 
   if (!country) {
-    return NextResponse.json({ message: 'Country parameter is missing' }, { status: 400 });
+    return NextResponse.json({ message: 'Country not found in URL' }, { status: 404 });
   }
 
-  try {
-    const client = await clientPromise;
-    const db = client.db('geo-hints');
-    const countriesCollection = db.collection('hints');
+  const client = await clientPromise;
+  const db = client.db('geo-hints');
+  const countriesCollection = db.collection('hints');
 
-    const countryInfo = await countriesCollection.findOne({ country });
+  const countryCursor = countriesCollection.find({ country: country });
 
-    if (!countryInfo) {
-      return NextResponse.json({ message: 'Country not found' }, { status: 404 });
-    }
+  const countryInfo = await countryCursor.toArray();
 
-    return NextResponse.json(countryInfo);
-  } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json(
-        { message: 'Internal Server Error', error: error.message },
-        { status: 500 }
-      );
-    }
-    return NextResponse.json(
-      { message: 'Internal Server Error', error: 'Unknown error occurred' },
-      { status: 500 }
-    );
+  if (countryInfo.length === 0) {
+    return NextResponse.json({ message: 'Country not found' }, { status: 404 });
   }
+
+  return NextResponse.json(countryInfo);
 }

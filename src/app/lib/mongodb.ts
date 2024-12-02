@@ -14,7 +14,6 @@ const client = new MongoClient(mongoUri);
 let clientPromise: Promise<MongoClient>;
 
 if (process.env.NODE_ENV === 'development') {
-  // In development, use a global variable so the MongoClient is not repeatedly created during hot reloading
   if (global._mongoClientPromise) {
     clientPromise = global._mongoClientPromise;
   } else {
@@ -22,7 +21,6 @@ if (process.env.NODE_ENV === 'development') {
     clientPromise = global._mongoClientPromise;
   }
 } else {
-  // In production, it's safe to always connect
   clientPromise = client.connect();
 }
 

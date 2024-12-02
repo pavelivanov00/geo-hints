@@ -1,14 +1,13 @@
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import { useState, useEffect } from "react";
 import "leaflet/dist/leaflet.css";
-import { useRouter } from "next/navigation"; // For programmatic navigation
+import { useRouter } from "next/navigation";
 
 const WorldMap = () => {
   const [geoData, setGeoData] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
-    // Fetch GeoJSON data from the public folder
     fetch('/countries.geojson')
       .then((response) => response.json())
       .then((data) => setGeoData(data))
@@ -17,7 +16,6 @@ const WorldMap = () => {
 
   const handleCountryClick = (e: any) => {
     const countryName = e.target.feature.properties.ADMIN;
-    // Navigate to the dynamic route for the clicked country
     router.push(`country/${countryName.toLowerCase()}`);
   };
 
