@@ -1,9 +1,8 @@
-
 import { Metadata } from "next";
-
+import "./styles.css";
 
 export async function generateMetadata({ params }: { params: { country: string } }): Promise<Metadata> {
-  const countryName = params.country;
+  const countryName = decodeURIComponent(params.country);
   return {
     title: `${countryName} - Geo Hints`,
     description: `Hints and details for ${countryName}`,
@@ -14,7 +13,8 @@ export async function getCountryInfo(country: string) {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/country/${country}`);
 
   if (!response.ok) {
-    throw new Error('Failed to fetch country info');
+    const errorData = await response.json();
+    return { status: response.status, message: errorData.message };
   }
 
   return response.json();
@@ -26,18 +26,35 @@ interface Props {
   };
 }
 
+function capitalizeFirstLetter(str: string): string {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 const CountryPage = async ({ params }: Props) => {
-  const country = params.country;
+  const country = decodeURIComponent(params.country);
+  const countryName = capitalizeFirstLetter(country);
+
   const countryInfo = await getCountryInfo(country);
 
+  if (countryInfo.status === 404) {
+    console.log(countryInfo)
+    return (
+      <div className="mainContainer">
+        <h1>{countryName}</h1>
+        <p className="marginTop fontSize20">{countryInfo.message}</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      {countryInfo.length > 0 && <h1>{countryInfo[0].country}</h1>}
+    <div className="mainContainer center">
+      {countryInfo.length > 0 && <h1>{capitalizeFirstLetter(countryInfo[0].country)}</h1>}
       {countryInfo.map((entry: any, index: number) =>
         entry.type === "image" ? (
-          <img key={index} src={entry.hint} alt={`${entry.country} hint`} />
+          <img className="marginTop 60PercentSize" key={index} src={entry.hint} alt={`${entry.country} hint`} />
         ) : (
-          <p key={index}>{entry.hint}</p>
+          <p key={index} className="marginTop">{entry.hint}</p>
         )
       )}
     </div>

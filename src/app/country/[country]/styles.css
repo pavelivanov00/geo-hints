@@ -1,0 +1,20 @@
+.marginTop {
+    margin-top: 2rem;
+}
+
+.mainContainer {
+    margin-top: 2rem;
+    margin-left: 2rem;
+}
+
+.fontSize20 {
+    font-size: 20px;
+}
+
+.center {
+    text-align: center;
+}
+
+.smallerSize {
+    max-width: 40%;
+}

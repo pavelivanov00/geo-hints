@@ -1,29 +1,22 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/app/lib/mongodb';
 
-export async function GET(req: Request) {
-  if (!req.url) {
-    return NextResponse.json({ message: 'Invalid request URL' }, { status: 400 });
+export async function GET(req: Request, { params }: { params: { country: string } }) {
+  try {
+    const countryName = decodeURIComponent(params.country);
+    const client = await clientPromise;
+    const db = client.db('geo-hints');
+    const countriesCollection = db.collection('hints');
+
+    const countryInfo = await countriesCollection.find({ country: countryName }).toArray();
+
+    if (!countryInfo || countryInfo.length === 0) {
+      return NextResponse.json({ message: `No hints added yet for this country` }, { status: 404 });
+    }
+
+    return NextResponse.json(countryInfo);
+  } catch (error) {
+    console.error('Error fetching country info:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
-
-  const url = new URL(req.url);
-  const country = url.pathname.split('/').pop();
-
-  if (!country) {
-    return NextResponse.json({ message: 'Country not found in URL' }, { status: 404 });
-  }
-
-  const client = await clientPromise;
-  const db = client.db('geo-hints');
-  const countriesCollection = db.collection('hints');
-
-  const countryCursor = countriesCollection.find({ country: country });
-
-  const countryInfo = await countryCursor.toArray();
-
-  if (countryInfo.length === 0) {
-    return NextResponse.json({ message: 'Country not found' }, { status: 404 });
-  }
-
-  return NextResponse.json(countryInfo);
 }
