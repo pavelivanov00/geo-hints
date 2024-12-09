@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import "./styles.css";
+import GoBackButton from './GoBackButton';
 
 export async function generateMetadata({ params }: { params: { country: string } }): Promise<Metadata> {
   const countryName = decodeURIComponent(params.country);
@@ -40,7 +41,7 @@ const CountryPage = async ({ params }: Props) => {
   if (countryInfo.status === 404) {
     console.log(countryInfo)
     return (
-      <div className="mainContainer">
+      <div className="mainContainer center">
         <h1>{countryName}</h1>
         <p className="marginTop fontSize20">{countryInfo.message}</p>
       </div>
@@ -49,15 +50,25 @@ const CountryPage = async ({ params }: Props) => {
 
   return (
     <div className="mainContainer center">
-      {countryInfo.length > 0 && <h1>{capitalizeFirstLetter(countryInfo[0].country)}</h1>}
-      {countryInfo.map((entry: any, index: number) =>
-        entry.type === "image" ? (
-          <img className="marginTop 60PercentSize" key={index} src={entry.hint} alt={`${entry.country} hint`} />
-        ) : (
-          <p key={index} className="marginTop">{entry.hint}</p>
+      {countryInfo.length > 0 &&
+        <div className="flexbox">
+          <GoBackButton />
+          <h1 className="countryName">
+            {capitalizeFirstLetter(countryInfo[0].country)}
+          </h1>
+        </div>
+      }
+
+      {
+        countryInfo.map((entry: any, index: number) =>
+          entry.type === "image" ? (
+            <img className="marginTop smallerSize" key={index} src={entry.hint} alt={`${entry.country} hint`} />
+          ) : (
+            <p key={index} className="marginTop">{entry.hint}</p>
+          )
         )
-      )}
-    </div>
+      }
+    </div >
   );
 };
 
