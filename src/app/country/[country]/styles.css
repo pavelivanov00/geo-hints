@@ -17,10 +17,10 @@
 
 .flexbox {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     width: 100%;
-    position: relative;
+    /* position: relative; */
 }
 
 .goBackButton {
@@ -37,10 +37,8 @@
 }
 
 .countryName {
-    margin: 0;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    margin-left: 50px;
+    margin-right: 150px;
     text-align: center;
 }
 

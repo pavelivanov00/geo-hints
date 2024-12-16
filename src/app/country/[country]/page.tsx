@@ -42,7 +42,10 @@ const CountryPage = async ({ params }: Props) => {
     console.log(countryInfo)
     return (
       <div className="mainContainer center">
-        <h1>{countryName}</h1>
+        <div className="flexbox">
+          <GoBackButton />
+          <h1 className="countryName">{countryName}</h1>
+        </div>
         <p className="marginTop fontSize20">{countryInfo.message}</p>
       </div>
     );
@@ -68,7 +71,7 @@ const CountryPage = async ({ params }: Props) => {
           )
         )
       }
-    </div >
+    </div>
   );
 };
 

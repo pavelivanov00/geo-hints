@@ -2,9 +2,11 @@ import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import { useState, useEffect } from "react";
 import "leaflet/dist/leaflet.css";
 import { useRouter } from "next/navigation";
+import "./WorldMap.css";
 
 const WorldMap = () => {
   const [geoData, setGeoData] = useState(null);
+  const [tooltip, setTooltip] = useState({ visible: false, name: "", x: 0, y: 0 });
   const router = useRouter();
 
   useEffect(() => {
@@ -19,12 +21,36 @@ const WorldMap = () => {
     router.push(`country/${countryName.toLowerCase()}`);
   };
 
+  const handleCountryMouseOver = (e: any) => {
+    const countryName = e.target.feature.properties.ADMIN;
+    setTooltip({
+      visible: true,
+      name: countryName,
+      x: e.originalEvent.pageX,
+      y: e.originalEvent.pageY
+    });
+  };
+
+  const handleCountryMouseOut = () => {
+    setTooltip({ ...tooltip, visible: false });
+  };
+
   if (!geoData) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div style={{ height: "100vh", width: "100%" }}>
+    <div className="container">
+      {tooltip.visible && (
+        <div 
+        className="countryTooltip"
+        style={{ top: tooltip.y + 10, left: tooltip.x + 10 }}
+        >
+          {tooltip.name}
+        </div>
+      )}
+
+
       <MapContainer center={[20, 0]} zoom={2} style={{ height: "100%", width: "100%" }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -33,9 +59,9 @@ const WorldMap = () => {
         <GeoJSON
           data={geoData}
           onEachFeature={(feature, layer) => {
-            const countryName = feature.properties.ADMIN;
-            layer.bindPopup(`<b>${countryName}</b>`);
             layer.on("click", handleCountryClick);
+            layer.on("mouseover", handleCountryMouseOver);
+            layer.on("mouseout", handleCountryMouseOut);
           }}
         />
       </MapContainer>
