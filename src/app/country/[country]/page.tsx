@@ -65,7 +65,12 @@ const CountryPage = async ({ params }: Props) => {
       {
         countryInfo.map((entry: any, index: number) =>
           entry.type === "image" ? (
-            <img className="marginTop smallerSize" key={index} src={entry.hint} alt={`${entry.country} hint`} />
+            <div key={index} className="hintsWrapper">
+              <div className="hintFlexbox marginTop">
+                <img className="image" src={entry.hint} alt={`${entry.country} hint`} />
+                <div className="imageDescription">{entry.description}</div>
+              </div>
+            </div>
           ) : (
             <p key={index} className="marginTop">{entry.hint}</p>
           )

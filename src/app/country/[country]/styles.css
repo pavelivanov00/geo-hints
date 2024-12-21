@@ -20,7 +20,7 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    /* position: relative; */
+
 }
 
 .goBackButton {
@@ -42,6 +42,25 @@
     text-align: center;
 }
 
-.smallerSize {
-    max-width: 70%;
+.hintsWrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-left: 200px;
+  }
+
+.hintFlexbox {
+    display: flex;
+    align-items: center;
+    width: 70%;
+}
+
+.image {
+    max-width: 40%;
+    margin-right: 50px;
+}
+
+.imageDescription {
+    text-align: left;
+    line-height: 1.5;
 }
