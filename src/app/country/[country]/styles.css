@@ -56,11 +56,12 @@
 }
 
 .image {
-    max-width: 40%;
+    max-width: 50%;
     margin-right: 50px;
 }
 
 .imageDescription {
+    max-width: 40%;
     text-align: left;
     line-height: 1.5;
 }
