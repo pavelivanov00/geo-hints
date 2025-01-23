@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/app/lib/mongodb';
 
-export async function GET(req: Request, context: { params: { country: string } }) {
+interface CountryParams {
+  country: string;
+}
+
+export async function GET(req: Request, { params }: { params: CountryParams }) {
   try {
-    const { country } = context.params;
-    const countryName = decodeURIComponent(country);
+    const countryName = decodeURIComponent(params.country);
     
     const client = await clientPromise;
     const db = client.db('geo-hints');
