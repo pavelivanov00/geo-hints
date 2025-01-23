@@ -1,6 +1,7 @@
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import { useState, useEffect } from "react";
 import "leaflet/dist/leaflet.css";
+import type { LeafletMouseEvent } from "leaflet";
 import { useRouter } from "next/navigation";
 import "./WorldMap.css";
 
@@ -16,12 +17,12 @@ const WorldMap = () => {
       .catch((error) => console.error("Error loading GeoJSON:", error));
   }, []);
 
-  const handleCountryClick = (e: any) => {
+  const handleCountryClick = (e: LeafletMouseEvent) => {
     const countryName = e.target.feature.properties.ADMIN;
     router.push(`country/${countryName.toLowerCase()}`);
   };
 
-  const handleCountryMouseOver = (e: any) => {
+  const handleCountryMouseOver = (e: LeafletMouseEvent) => {
     const countryName = e.target.feature.properties.ADMIN;
     setTooltip({
       visible: true,

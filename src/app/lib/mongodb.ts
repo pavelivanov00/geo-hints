@@ -1,12 +1,8 @@
 import { MongoClient } from 'mongodb';
 
-declare global {
-  var _mongoClientPromise: Promise<MongoClient> | undefined;
-}
-
 const mongoUri = process.env.MONGODB_URI_ATLAS;
 if (!mongoUri) {
-  throw new Error('MONGODB_URI is not defined in the environment variables');
+  throw new Error('MONGODB_URI_ATLAS is not defined in the environment variables');
 }
 
 const client = new MongoClient(mongoUri);
@@ -14,12 +10,15 @@ const client = new MongoClient(mongoUri);
 let clientPromise: Promise<MongoClient>;
 
 if (process.env.NODE_ENV === 'development') {
-  if (global._mongoClientPromise) {
-    clientPromise = global._mongoClientPromise;
-  } else {
-    global._mongoClientPromise = client.connect();
-    clientPromise = global._mongoClientPromise;
+  const globalWithMongoClient = globalThis as typeof globalThis & {
+    _mongoClientPromise?: Promise<MongoClient>;
+  };
+
+  if (!globalWithMongoClient._mongoClientPromise) {
+    globalWithMongoClient._mongoClientPromise = client.connect();
   }
+
+  clientPromise = globalWithMongoClient._mongoClientPromise;
 } else {
   clientPromise = client.connect();
 }

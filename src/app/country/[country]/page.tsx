@@ -51,6 +51,13 @@ const CountryPage = async ({ params }: Props) => {
     );
   }
 
+  interface CountryHint {
+    country: string;
+    hint: string;
+    type: "image" | "text";
+    description?: string;
+  }
+
   return (
     <div className="mainContainer center">
       {countryInfo.length > 0 &&
@@ -63,7 +70,7 @@ const CountryPage = async ({ params }: Props) => {
       }
 
       {
-        countryInfo.map((entry: any, index: number) =>
+        countryInfo.map((entry: CountryHint, index: number) =>
           entry.type === "image" ? (
             <div key={index} className="hintsWrapper">
               <div className="hintFlexbox marginTop">
