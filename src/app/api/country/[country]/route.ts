@@ -7,7 +7,7 @@ export async function GET(req: NextRequest, context: any) {
     const countryName = decodeURIComponent(params.country);
 
     const client = await clientPromise;
-    const db = client.db("geo-hints");
+    const db = client.db("country-hints");
     const countriesCollection = db.collection("hints");
 
     const countryInfo = await countriesCollection.find({ country: countryName }).toArray();
